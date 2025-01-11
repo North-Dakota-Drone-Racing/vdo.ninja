@@ -1098,6 +1098,11 @@
 		videoMode = true;
 	}
 	
+	var chat = true;
+	if (urlParams.has('hidechat')){
+		chat = false;
+	}
+	
 	if (screen.height && screen.width && (screen.height*screen.width<400000)){
 		mobile = true;
 	}
@@ -1792,7 +1797,10 @@
 		roomname = sanitizeRoomName(roomname);
 	
 		var iframeContainer = document.getElementById("iframeContainer");
-		iframe.allow = "autoplay;camera;microphone;fullscreen;picture-in-picture;display-capture;";
+		iframe.allow = "autoplay;camera;microphone;fullscreen;picture-in-picture;display-capture;screen-wake-lock;accelerometer;midi;geolocation;gyroscope;";
+		iframe.setAttribute("allowtransparency", "true");
+		iframe.setAttribute("crossorigin", "anonymous");
+		iframe.setAttribute("credentialless", "true");
 		iframe.id = "vdoninja";
 		
 		if (!roomname){
@@ -1834,7 +1842,12 @@
 		
 		if (!mobile){
 			document.getElementById("chatModule").classList.remove("hidden");
-		}
+			if (!chat){
+				toggleChat();
+			}
+		} 
+		
+		
 		
 		iframe.onload = function(){
 			iframe.contentWindow.postMessage({ groups: savedSession.activeGroups ,  groupView: savedSession.activeViewGroups }, "*"); 
